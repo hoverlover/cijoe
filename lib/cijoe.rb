@@ -18,6 +18,8 @@ require 'cijoe/config'
 require 'cijoe/commit'
 require 'cijoe/build'
 require 'cijoe/campfire'
+require 'cijoe/twitter'
+require 'cijoe/bitly'
 require 'cijoe/server'
 require 'bundler'
 
@@ -199,7 +201,7 @@ class CIJoe
         end
 
       data.each{ |k, v| ENV[k] = v }
-      ret = `cd #{@project_path} && bundle exec sh #{file}`
+      ret = `cd #{@project_path} && sh #{file}`
       data.each{ |k, v| ENV[k] = nil }
       ret
     end
@@ -233,7 +235,7 @@ class CIJoe
   end
 
   def repo_config
-    Config.cijoe(@project_path)
+    Config.cijoe
   end
 
   # load build info from file.

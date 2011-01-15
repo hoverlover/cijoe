@@ -4,14 +4,13 @@ class CIJoe
       new(command, *args)
     end
 
-    def initialize(command, project_path = nil, parent = nil)
+    def initialize(command, parent = nil)
       @command  = command
       @parent   = parent
-      @project_path = project_path || File.join(File.dirname(__FILE__), '../../')
     end
 
     def method_missing(command, *args)
-      Config.new(command, @project_path, self)
+      Config.new(command, self)
     end
 
     def config_string

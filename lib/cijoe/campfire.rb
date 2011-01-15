@@ -1,8 +1,6 @@
 class CIJoe
   module Campfire
-    def self.activate(project_path)
-      @project_path = project_path
-
+    def self.activate
       if valid_config?
         require 'tinder'
 
@@ -24,7 +22,7 @@ class CIJoe
     end
 
     def self.config
-      campfire_config = Config.new('campfire', @project_path)
+      campfire_config = Config.new('campfire')
       @config ||= {
         :subdomain => campfire_config.subdomain.to_s,
         :user      => campfire_config.user.to_s,

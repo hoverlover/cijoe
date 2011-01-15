@@ -60,7 +60,8 @@ class CIJoe
       super
       @joe = CIJoe.new(options.project_path)
 
-      #CIJoe::Campfire.activate(options.project_path)
+      CIJoe::Campfire.activate
+      CIJoe::Twitter.activate
     end
 
     def self.start(host, port, project_path)
@@ -69,7 +70,7 @@ class CIJoe
     end
 
     def self.project_path=(project_path)
-      user, pass = Config.cijoe(project_path).user.to_s, Config.cijoe(project_path).pass.to_s
+      user, pass = Config.cijoe.user.to_s, Config.cijoe.pass.to_s
       if user != '' && pass != ''
         use Rack::Auth::Basic do |username, password|
           [ username, password ] == [ user, pass ]
