@@ -22,12 +22,13 @@ require 'cijoe/server'
 require 'bundler'
 
 class CIJoe
-  attr_reader :user, :project, :url, :current_build, :last_build
+  attr_reader :user, :project, :url, :project_url, :current_build, :last_build
 
   def initialize(project_path)
     @project_path = File.expand_path(project_path)
 
     @url = repo_config.git_url.to_s
+    @project_url = @url.sub(%r{^(git:|http:)}, "https:").sub(%r{(https://)(.*:.*@)?(github.com)}, '\1' + '\3').chomp(".git")
     @user, @project = git_user_and_project
 
     @last_build = nil
@@ -163,8 +164,8 @@ class CIJoe
   end
 
   def git_clone
-    puts "#{Time.now.to_i}: Cloning #{ENV['GIT_URL']} to #{@project_path}"
-    `git clone #{ENV['GIT_URL']} #{@project_path}`
+    puts "#{Time.now.to_i}: Cloning #{repo_config.git_url} to #{@project_path}"
+    `git clone #{repo_config.git_url} #{@project_path}`
   end
 
   def git_update
@@ -173,7 +174,7 @@ class CIJoe
   end
 
   def git_user_and_project
-    [(core = @url.sub(%r{https?://}, '').chomp(".git")).split(':')[0], core.split('/').last]
+    @url.sub(%r{https?://}, '').chomp('.git').split(':')[-1].split('/')[-2, 2]
   end
 
   def git_branch
