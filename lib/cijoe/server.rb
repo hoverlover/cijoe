@@ -58,10 +58,9 @@ class CIJoe
 
     def initialize(*args)
       super
-      check_project
       @joe = CIJoe.new(options.project_path)
 
-      CIJoe::Campfire.activate(options.project_path)
+      #CIJoe::Campfire.activate(options.project_path)
     end
 
     def self.start(host, port, project_path)
@@ -78,14 +77,6 @@ class CIJoe
         puts "Using HTTP basic auth"
       end
       set :project_path, Proc.new{project_path}
-    end
-
-    def check_project
-      if options.project_path.nil? || !File.exists?(File.expand_path(options.project_path))
-        puts "Whoops! I need the path to a Git repo."
-        puts "  $ git clone git@github.com:username/project.git project"
-        abort "  $ cijoe project"
-      end
     end
   end
 end

@@ -19,6 +19,7 @@ require 'cijoe/commit'
 require 'cijoe/build'
 require 'cijoe/campfire'
 require 'cijoe/server'
+require 'bundler'
 
 class CIJoe
   attr_reader :user, :project, :url, :current_build, :last_build
@@ -26,8 +27,8 @@ class CIJoe
   def initialize(project_path)
     @project_path = File.expand_path(project_path)
 
+    @url = repo_config.git_url.to_s
     @user, @project = git_user_and_project
-    @url = "http://github.com/#{@user}/#{@project}"
 
     @last_build = nil
     @current_build = nil
@@ -102,6 +103,7 @@ class CIJoe
       return
     end
     @current_build = Build.new(@project_path, @user, @project)
+    git_clone unless File.exists?(@project_path)
     write_build 'current', @current_build
     Thread.new { build!(branch) }
   end
@@ -129,12 +131,15 @@ class CIJoe
     build.sha = git_sha
     write_build 'current', build
 
-    open_pipe("cd #{@project_path} && #{runner_command} 2>&1") do |pipe, pid|
-      puts "#{Time.now.to_i}: Building #{build.short_sha}: pid=#{pid}"
+    ::Bundler.with_clean_env do
+      ENV['BUNDLE_GEMFILE'] = nil
+      open_pipe("cd #{@project_path} && #{runner_command} 2>&1") do |pipe, pid|
+        puts "#{Time.now.to_i}: Building #{build.short_sha}: pid=#{pid}"
 
-      build.pid = pid
-      write_build 'current', build
-      output = pipe.read
+        build.pid = pid
+        write_build 'current', build
+        output = pipe.read
+      end
     end
 
     Process.waitpid(build.pid)
@@ -157,13 +162,18 @@ class CIJoe
     `cd #{@project_path} && git rev-parse origin/#{git_branch}`.chomp
   end
 
+  def git_clone
+    puts "#{Time.now.to_i}: Cloning #{ENV['GIT_URL']} to #{@project_path}"
+    `git clone #{ENV['GIT_URL']} #{@project_path}`
+  end
+
   def git_update
     `cd #{@project_path} && git fetch origin && git reset --hard origin/#{git_branch}`
     run_hook "after-reset"
   end
 
   def git_user_and_project
-    Config.remote(@project_path).origin.url.to_s.chomp('.git').split(':')[-1].split('/')[-2, 2]
+    [(core = @url.sub(%r{https?://}, '').chomp(".git")).split(':')[0], core.split('/').last]
   end
 
   def git_branch
