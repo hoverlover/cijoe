@@ -199,7 +199,7 @@ class CIJoe
         end
 
       data.each{ |k, v| ENV[k] = v }
-      ret = `cd #{@project_path} && sh #{file}`
+      ret = `cd #{@project_path} && bundle exec sh #{file}`
       data.each{ |k, v| ENV[k] = nil }
       ret
     end
