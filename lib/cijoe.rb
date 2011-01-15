@@ -131,8 +131,8 @@ class CIJoe
     build.sha = git_sha
     write_build 'current', build
 
-    ::Bundler.with_clean_env do
-      ENV['BUNDLE_GEMFILE'] = nil
+    #::Bundler.with_clean_env do
+      #ENV['BUNDLE_GEMFILE'] = nil
       open_pipe("cd #{@project_path} && #{runner_command} 2>&1") do |pipe, pid|
         puts "#{Time.now.to_i}: Building #{build.short_sha}: pid=#{pid}"
 
@@ -140,7 +140,7 @@ class CIJoe
         write_build 'current', build
         output = pipe.read
       end
-    end
+    #end
 
     Process.waitpid(build.pid)
     status = $?.exitstatus.to_i
