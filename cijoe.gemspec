@@ -22,6 +22,8 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency     'choice'
   s.add_runtime_dependency     'sinatra'
   s.add_development_dependency 'rack-test'
+  s.add_development_dependency 'bitly'
+  s.add_development_dependency 'twitter'
 
    s.description       = <<desc
   cijoe is a sinatra-based continuous integration server. It's like an

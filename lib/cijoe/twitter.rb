@@ -1,3 +1,5 @@
+require 'multi_json'
+
 class CIJoe
   module Twitter
     CONFIG_VARS = %w[consumer_key consumer_secret oauth_token oauth_token_secret]
