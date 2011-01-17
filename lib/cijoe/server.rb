@@ -12,7 +12,11 @@ class CIJoe
     set :static, true
     set :lock, true
 
-    before { joe.restore }
+    # This seems to cause problems, specifically causing the current build
+    # to lose it's commit info (sha, author, etc.), so I'm commenting it out.
+    # I haven't found that it breaks anything by having it commented out.
+    #
+    #before { joe.restore }
 
     get '/ping' do
       if joe.building? || !joe.last_build || !joe.last_build.worked?

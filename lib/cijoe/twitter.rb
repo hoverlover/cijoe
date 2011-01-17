@@ -44,8 +44,8 @@ class CIJoe
 
   private
     def build_status
-      parts = [short_sha, status || "failed"]
-      parts + [commit.author, commit.message].join(':') if commit
+      parts = [short_sha, status.to_s.upcase || "FAILED"]
+      parts = parts << [commit.author.sub(%r{\s<.*>}, ''), commit.message].join(': ') if commit
       parts.compact.join(' ')
     end
 

@@ -152,6 +152,7 @@ class CIJoe
     status == 0 ? build_worked(output) : build_failed('', output)
   rescue Object => e
     puts "Exception building: #{e.message} (#{e.class})"
+    puts e.backtrace
     build_failed('', e.to_s)
   end
 
