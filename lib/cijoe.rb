@@ -134,9 +134,6 @@ class CIJoe
     build.sha = git_sha
     write_build 'current', build
 
-    # Copy the Heroku database.yml file down to @project_path so we can use the Postgres server
-    copy_database_yml
-
     ::Bundler.with_clean_env do
       ENV['BUNDLE_GEMFILE'] = nil
       open_pipe("cd #{@project_path} && #{runner_command} 2>&1") do |pipe, pid|
@@ -156,10 +153,6 @@ class CIJoe
   rescue Object => e
     puts "Exception building: #{e.message} (#{e.class})"
     build_failed('', e.to_s)
-  end
-
-  def copy_database_yml
-    `cp config/database.yml #{path_in_project("/config")}`
   end
 
   # shellin' out
