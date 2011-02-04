@@ -1,3 +1,7 @@
+**Note:** This is a fork of [CI Joe](https://github.com/defunkt/cijoe) that will run on [Heroku](http://heroku.com).  Check out
+[Heroku CI Joe](https://github.com/hoverlover/heroku_cijoe) for more
+info.
+
 CI Joe
 ======
 
