@@ -227,7 +227,7 @@ class CIJoe
   # write build info for build to file.
   def write_build(name, build)
     filename = path_in_project(".git/builds/#{name}")
-    Dir.mkdir path_in_project('.git/builds') unless File.directory?(path_in_project('.git/builds'))
+    FileUtils.mkdir_p path_in_project('.git/builds') unless File.directory?(path_in_project('.git/builds'))
     if build
       build.dump filename
     elsif File.exist?(filename)
